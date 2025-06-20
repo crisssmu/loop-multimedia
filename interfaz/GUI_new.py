@@ -35,29 +35,29 @@ def list_file_videos(directorio_script):
 
 def out_entry(event):
     root.focus_set()
-def focus_hour(event):
-    if time_hour.get() == "00":
-        time_hour.delete(0, END)
+# def focus_hour(event):
+#     if time_hour.get() == "00":
+#         time_hour.delete(0, END)
 
-def lost_focus_hour(event):
-    if time_hour.get() == "":
-        time_hour.insert(0, "00")
+# def lost_focus_hour(event):
+#     if time_hour.get() == "":
+#         time_hour.insert(0, "00")
 
-def focus_min(event):
-    if time_min.get() == "00":
-        time_min.delete(0, END)
+# def focus_min(event):
+#     if time_min.get() == "00":
+#         time_min.delete(0, END)
 
-def lost_focus_min(event):
-    if time_min.get() == "":
-        time_min.insert(0, "00")
+# def lost_focus_min(event):
+#     if time_min.get() == "":
+#         time_min.insert(0, "00")
 
-def focus_sg(event):
-    if time_seg.get() == "00":
-        time_seg.delete(0, END)
+# def focus_sg(event):
+#     if time_seg.get() == "00":
+#         time_seg.delete(0, END)
 
-def lost_focus_sg(event):
-    if time_seg.get() == "":
-        time_seg.insert(0, "00")
+# def lost_focus_sg(event):
+#     if time_seg.get() == "":
+#         time_seg.insert(0, "00")
 
 def validate_hr (new_value):
     return (new_value == '' or (new_value.isdigit() and 0 <=int(new_value) <= 24))
@@ -83,7 +83,7 @@ def select_file():
                 return file
        
 def convert_seconds():
-    total_seconds = int(time_hour.get()) * 3600 + int(time_min.get()) * 60 + int(time_seg.get())
+    total_seconds = int(loop_hour.get()) * 3600 + int(loop_min.get()) * 60 + int(loop_seg.get())
     print(f"Total seconds: {total_seconds}")
     return total_seconds
 
@@ -104,9 +104,9 @@ def play_media():
 def block_entry():
     menu_button_moni.config(state=DISABLED)
     menu_button_archive.config(state=DISABLED)
-    time_hour.config(state=DISABLED)
-    time_min.config(state=DISABLED)
-    time_seg.config(state=DISABLED)
+    loop_hour.config(state=DISABLED)
+    loop_min.config(state=DISABLED)
+    loop_seg.config(state=DISABLED)
     menu_button_media.config(state=DISABLED)
 
 def button_play(event=None):
@@ -229,16 +229,10 @@ time_min_im = Entry(root, validate="key", validatecommand=command_min)
 time_label4 = Label(root, text=':', bg="#FDF8E1", fg="black", font=("Arial", 16),width=1)
 time_seg_im = Entry(root, validate="key", validatecommand=command_second)
 
-time_hr_im.bind("<FocusIn>", focus_hour)
-time_hr_im.bind("<FocusOut>", lost_focus_hour)
 time_hr_im.bind("<Return>", out_entry)
 
-time_min_im.bind("<FocusIn>", focus_min)
-time_min_im.bind("<FocusOut>", lost_focus_min)
 time_min_im.bind("<Return>", out_entry)
 
-time_seg_im.bind("<FocusIn>", focus_sg)
-time_seg_im.bind("<FocusOut>", lost_focus_sg)
 time_seg_im.bind("<Return>", out_entry)
 
 # Menu despegable de archivos
@@ -253,67 +247,37 @@ menu_button_archive["menu"] = menu_archive
 
 # #Time duration for loop
 # #string
-# y_loop = center_y-80
-# loop_time_label = ft.format_time_label(root, 'Tiempo ' +'\nloop: ')
-# loop_time_label.place(x=center_x-250, y=y_loop)
+y_loop = center_y-80
 
-# #Hour
-# loop_hour = ft.format_hour(root)
-# loop_hour.place(x=center_x-130, y=y_loop)
-# loop_hour.bind("<FocusIn>", ft.focus_hour)
-# loop_hour.bind("<FocusOut>", ft.lost_focus_hour)
-# loop_hour.bind("<Return>", ft.out_entry)
+loop_time_label = ft.format_time_label(root, 'Tiempo ' +'\nloop: ')
+loop_time_label.place(x=center_x-250, y=y_loop)
+loop_hour = ft.format_hour(root)
+loop_hour.insert(0, '00')
 
-# loop_separate = ft.separate(root)
-# loop_separate.place(x=center_x-100, y=y_loop)
+loop_separate = ft.separate(root)
 
-# #Minutes
-# loop_min = ft.format_minute(root)
-# loop_min.place(x=center_x-80, y=y_loop)
-# loop_min.bind("<FocusIn>", ft.focus_min)
-# loop_min.bind("<FocusOut>", ft.lost_focus_min)
-# loop_min.bind("<Return>", ft.out_entry)
+loop_min = ft.format_minute(root)
+loop_min.insert(0, '00')
+loop_separate2 = ft.separate(root)
+loop_seg = ft.format_second(root)
+loop_seg.insert(0, '00')
 
-# loop_separate2 = ft.separate(root)
-# loop_separate2.place(x=center_x-50, y=y_loop)
+loop_hour.place(x=center_x-130, y=y_loop)
+loop_hour.bind("<Return>", out_entry)
 
-# #Seconds
-# loop_seg = ft.format_second(root)
-# loop_seg.place(x=center_x-30, y=y_loop)
-# loop_seg.bind("<FocusIn>", ft.focus_sg)
-# loop_seg.bind("<FocusOut>", ft.lost_focus_sg)
-# loop_seg.bind("<Return>", ft.out_entry)
+loop_separate.place(x=center_x-100, y=y_loop)
 
+loop_min.place(x=center_x-80, y=y_loop)
+loop_min.bind("<Return>", out_entry)
 
-time_label = Label(root, text='Tiempo ' +'\nintermedio: ', bg="#FDF8E1", fg="black", font=("Arial", 16), justify=LEFT).place(x=center_x-250, y=center_y-80)
-time_hour = Entry(root, validate="key", validatecommand=command_hour)
-time_hour.insert(0, '00')
-time_hour.grid(row=0, column=1)
-time_hour.config(bg="#FFFFFF", fg="black", font=("Arial", 16), width=2)
-time_hour.place(x=center_x-130, y=center_y-65)
-time_hour.bind("<Return>", out_entry)
-time_hour.bind("<FocusIn>", focus_hour)
-time_hour.bind("<FocusOut>", lost_focus_hour)
-tiempo1 = Label(root, text=':', bg="#FDF8E1", fg="black", font=("Arial", 16),width=1).place(x=center_x-100, y=center_y-65)
-#Minutos
-time_min = Entry(root, validate="key", validatecommand=command_min)
-time_min.insert(0, '00')
-time_min.grid(row=0, column=1)
-time_min.config(bg="#FFFFFF", fg="black", font=("Arial", 16), width=2)
-time_min.place(x=center_x-80, y=center_y-65)
-time_min.bind("<FocusIn>", focus_min)
-time_min.bind("<FocusOut>", lost_focus_min)
-time_min.bind("<Return>", out_entry)
-time_label2 = Label(root, text=':', bg="#FDF8E1", fg="black", font=("Arial", 16),width=1).place(x=center_x-50, y=center_y-65)
-#Segundos
-time_seg = Entry(root,textvariable='seg', validate="key", validatecommand=command_second)
-time_seg.insert(0, '00')
-time_seg.grid(row=0, column=1)
-time_seg.config(bg="#FFFFFF", fg="black",font=("Arial", 16), width=2)
-time_seg.place(x=center_x-30, y=center_y-65)
-time_seg.bind("<FocusIn>", focus_sg)
-time_seg.bind("<FocusOut>", lost_focus_sg)
-time_seg.bind("<Return>", out_entry)
+loop_separate2.place(x=center_x-50, y=y_loop)
+
+loop_seg.place(x=center_x-30, y=y_loop)
+loop_seg.bind("<Return>", out_entry)
+
+for widget in (loop_hour, loop_min, loop_seg):
+    widget.bind("<FocusIn>", ft.focus_time)
+    widget.bind("<FocusOut>", ft.lost_focus_time)
 
 
 y_moni = center_y - 10
@@ -342,7 +306,6 @@ button.bind("<Button-1>", button_play)
 
 button_exit = Button(root, text='Salir', command=on_closing)
 button_exit.place(x=center_x-50, y=center_y+100)
-
 
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
