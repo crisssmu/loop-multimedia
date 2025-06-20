@@ -35,29 +35,6 @@ def list_file_videos(directorio_script):
 
 def out_entry(event):
     root.focus_set()
-# def focus_hour(event):
-#     if time_hour.get() == "00":
-#         time_hour.delete(0, END)
-
-# def lost_focus_hour(event):
-#     if time_hour.get() == "":
-#         time_hour.insert(0, "00")
-
-# def focus_min(event):
-#     if time_min.get() == "00":
-#         time_min.delete(0, END)
-
-# def lost_focus_min(event):
-#     if time_min.get() == "":
-#         time_min.insert(0, "00")
-
-# def focus_sg(event):
-#     if time_seg.get() == "00":
-#         time_seg.delete(0, END)
-
-# def lost_focus_sg(event):
-#     if time_seg.get() == "":
-#         time_seg.insert(0, "00")
 
 def validate_hr (new_value):
     return (new_value == '' or (new_value.isdigit() and 0 <=int(new_value) <= 24))
