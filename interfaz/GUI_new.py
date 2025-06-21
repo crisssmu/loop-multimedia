@@ -1,82 +1,63 @@
 import tkinter as tk 
 from tkinter import *
+import sys
 from pathlib import Path
-import video2 as vi
-import monitor_utils as moni
+
+# Agrega el path a la raíz del proyecto (donde está la carpeta utils/)
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+import loop_media 
+from utils.monitor_utils import Monitor
 import threading as th
-import os
 import FormaterTime as ft
+from extension_media import ExtensionMedia as ext
 
 video_thread = None
-ruta_script = Path(__file__).resolve()
-directorio_script = ruta_script.parent
-
-print(f"Ruta del script: {ruta_script}")
-print(f"Directorio del script: {directorio_script}")
-
-extension_videos = [".mp4", ".mkv", ".avi", ".mov", ".wmv"]
-extension_images = [".jpg", ".png", ".jpeg"]
-
-def list_file_imagen(directorio_script):
-    files = os.listdir(directorio_script)
-    images = [
-        file for file in files 
-        if os.path.splitext(file)[1].lower() in extension_images
-    ]
-    return images
-
-def list_file_videos(directorio_script):
-    files = os.listdir(directorio_script)
-    videos = [
-        file for file in files 
-        if os.path.splitext(file)[1].lower() in extension_videos
-    ]
-    return videos
 
 def out_entry(event):
+    
     root.focus_set()
 
-def validate_hr (new_value):
-    return (new_value == '' or (new_value.isdigit() and 0 <=int(new_value) <= 24))
+path = ext.get_path()
 
-def validate_min (new_value):
-    return (new_value == '' or (new_value.isdigit() and 0 <= int(new_value) <= 60))
+file_video = ext.list_file_videos()
 
-def validate_sg (new_value):
-    return (new_value == '' or (new_value.isdigit() and 0 <= int(new_value) <= 59))
+file_image = ext.list_file_imagen()
+
+moni = Monitor.get_monitores()
+
 
 def select_file():
     if(select_media.get() == 0):
-        for i, file in enumerate(list_file_videos(directorio_script)):
+        for i, file in enumerate(file_video):
             if(select_archive.get() == i):
                 menu_button_archive.config(text=file)
                 print(f"Seleccionaste: {file}")
                 return file
     else:
-        for i, file in enumerate(list_file_imagen(directorio_script)):
+        for i, file in enumerate(file_image):
             if(select_archive.get() == i):
                 menu_button_archive.config(text=file)
                 print(f"Seleccionaste: {file}")
                 return file
-       
-def convert_seconds():
-    total_seconds = int(loop_hour.get()) * 3600 + int(loop_min.get()) * 60 + int(loop_seg.get())
-    print(f"Total seconds: {total_seconds}")
-    return total_seconds
+
 
 def select_monitor():
-    for i, monitor in enumerate(moni.get_moni()):
+    for i, monitor in enumerate(moni):
         if(select_moni.get() == i):
             menu_button_moni.config(text=monitor.name)
             print(f"Seleccionaste: {monitor.name} indice: {i}")
             return i
 
 def play_media():
-    vi.stop_event.clear()
+    loop_media.stop_event.clear()
     video_path = select_file()
-    tiempo_intermedio = convert_seconds()
+    image_path = select_file()
+    tiempo_intermedio = ft.convert_seconds(loop_hour.get(), loop_min.get(), loop_seg.get())
     index_moni = select_monitor()
-    vi.loop_video(video_path, tiempo_intermedio, index_moni)
+    image_duration = ft.convert_seconds(time_hr_im.get(), time_min_im.get(), time_seg_im.get())
+    type_media = select_media.get()
+    loop_media.loop_video(video_path, image_path, tiempo_intermedio, index_moni, image_duration, type_media)
 
 def block_entry():
     menu_button_moni.config(state=DISABLED)
@@ -84,6 +65,9 @@ def block_entry():
     loop_hour.config(state=DISABLED)
     loop_min.config(state=DISABLED)
     loop_seg.config(state=DISABLED)
+    time_hr_im.config(state=DISABLED)
+    time_min_im.config(state=DISABLED)
+    time_seg_im.config(state=DISABLED)
     menu_button_media.config(state=DISABLED)
 
 def button_play(event=None):
@@ -97,7 +81,7 @@ def button_play(event=None):
     thread.start()
     
 def on_closing():
-    vi.stop_event.set()
+    loop_media.stop_event.set()
     if video_thread and video_thread.is_alive():
         video_thread.join()
     root.destroy()
@@ -105,48 +89,34 @@ def on_closing():
 def see_widgets():
     y_time_img = center_y-10
     time_img_label.place(x=center_x-250, y=y_time_img)
-    time_label3.place(x=center_x-100, y=y_time_img)
-    time_label4.place(x=center_x-50, y=y_time_img)
-
-    time_hr_im.insert(0, '00')
-    time_hr_im.grid(row=0, column=1)
-    time_hr_im.config(bg="#FFFFFF", fg="black", font=("Arial", 16), width=2)
+    separate3.place(x=center_x-100, y=y_time_img)
+    separate4.place(x=center_x-50, y=y_time_img)
     time_hr_im.place(x=center_x-130, y=y_time_img)
-
-    time_min_im.insert(0, '00')
-    time_min_im.grid(row=0, column=1)
-    time_min_im.config(bg="#FFFFFF", fg="black", font=("Arial", 16), width=2)
     time_min_im.place(x=center_x-80, y=y_time_img)
-
-    time_seg_im.insert(0, '00')
-    time_seg_im.grid(row=0, column=1)
-    time_seg_im.config(bg="#FFFFFF", fg="black",font=("Arial", 16), width=2)
     time_seg_im.place(x=center_x-30, y=y_time_img)
+
+def hide_widgets():
+    time_img_label.place_forget()
+    separate3.place_forget()
+    separate4.place_forget()
+    time_hr_im.place_forget()
+    time_min_im.place_forget()
+    time_seg_im.place_forget()
 
 def choose_type():
     menu_archive.delete(0, 'end')
-
     if(select_media.get() == 0):
         menu_button_media.config(text="Video")
-        file = list_file_videos(directorio_script)
-        time_label3.place_forget()
-        time_label4.place_forget()
-        time_hr_im.place_forget()
-        time_min_im.place_forget()
-        time_seg_im.place_forget()
+        file = file_video
+        hide_widgets()
         y_new_moni = y_moni
-        
-        
     else:
         menu_button_media.config(text="Imagen")
-        file = list_file_imagen(directorio_script)
-        
+        file = file_image
         see_widgets()
         y_new_moni = center_y+50
-
     choose_moni.place(x=center_x-250, y=y_new_moni)
-    menu_button_moni.place(x=center_x-130, y=y_new_moni)
-       
+    menu_button_moni.place(x=center_x-130, y=y_new_moni)   
 
     for i, file in enumerate(file):
         menu_archive.add_radiobutton(label=file, value=i, variable=select_archive, command=select_file) 
@@ -175,15 +145,9 @@ center_y = int(window_height // 2)
 
 root.geometry(f"{window_width}x{window_height}")
 
-# Variables tiempo
-command_hour = (root.register(validate_hr), '%P')
-command_min = (root.register(validate_min), '%P')
-command_second = (root.register(validate_sg), '%P')
-
-
 # Cuerpo de la interfaz
 
-# Tipo de archivo multimedia
+# Type of media archive
 select_media = IntVar(value=0)
 
 menu_media_label = Label(root, text='Tipo:', bg="#FDF8E1", fg="black", font=("Arial", 16)).place(x=center_x+100, y=center_y-150)
@@ -193,26 +157,23 @@ menu_button_media.place(x=center_x+150, y=center_y-150)
 menu_media = tk.Menu(menu_button_media, tearoff=False)
 menu_button_media["menu"] = menu_media
 
-
 menu_media.add_radiobutton(label="Video", value=0, variable=select_media, command=choose_type)
 menu_media.add_radiobutton(label="Imagen", value=1, variable=select_media, command=choose_type)
 
-# Tiempo de duracion para mostrar una imagen
+# time duration to image
 
-time_img_label = Label(root, text='Tiempo ' +'\nimagen: ', bg="#FDF8E1", fg="black", font=("Arial", 16), justify=LEFT)
-time_hr_im = Entry(root, validate="key", validatecommand=command_hour)
-time_label3 = Label(root, text=':', bg="#FDF8E1", fg="black", font=("Arial", 16),width=1)
-time_min_im = Entry(root, validate="key", validatecommand=command_min)
-time_label4 = Label(root, text=':', bg="#FDF8E1", fg="black", font=("Arial", 16),width=1)
-time_seg_im = Entry(root, validate="key", validatecommand=command_second)
+time_img_label = ft.format_time_label(root, 'Tiempo ' + '\n de la imagen:')
+time_hr_im = ft.format_hour(root)
+separate3 = ft.separate(root)
+time_min_im = ft.format_minute(root)
+separate4 = ft.separate(root)
+time_seg_im = ft.format_second(root)
 
 time_hr_im.bind("<Return>", out_entry)
-
 time_min_im.bind("<Return>", out_entry)
-
 time_seg_im.bind("<Return>", out_entry)
 
-# Menu despegable de archivos
+# Drop-down menu to choose archive
 archive_label = Label(root, text='Archivo:', bg="#FDF8E1", fg="black", font=("Arial", 16)).place(x=center_x-250, y=center_y-150)
 
 select_archive = IntVar()
@@ -222,22 +183,20 @@ menu_button_archive.place(x=center_x-130, y=center_y-150)
 menu_archive = tk.Menu(menu_button_archive, tearoff=False)
 menu_button_archive["menu"] = menu_archive
 
-# #Time duration for loop
-# #string
+# #Time duration to loop
 y_loop = center_y-80
 
 loop_time_label = ft.format_time_label(root, 'Tiempo ' +'\nloop: ')
 loop_time_label.place(x=center_x-250, y=y_loop)
 loop_hour = ft.format_hour(root)
-loop_hour.insert(0, '00')
 
 loop_separate = ft.separate(root)
 
 loop_min = ft.format_minute(root)
-loop_min.insert(0, '00')
+
 loop_separate2 = ft.separate(root)
 loop_seg = ft.format_second(root)
-loop_seg.insert(0, '00')
+
 
 loop_hour.place(x=center_x-130, y=y_loop)
 loop_hour.bind("<Return>", out_entry)
@@ -252,26 +211,26 @@ loop_separate2.place(x=center_x-50, y=y_loop)
 loop_seg.place(x=center_x-30, y=y_loop)
 loop_seg.bind("<Return>", out_entry)
 
-for widget in (loop_hour, loop_min, loop_seg):
+for widget in (loop_hour, loop_min, loop_seg, time_hr_im, time_min_im, time_seg_im):
     widget.bind("<FocusIn>", ft.focus_time)
     widget.bind("<FocusOut>", ft.lost_focus_time)
 
-
+# drop-down menu to choose monitor
 y_moni = center_y - 10
 
 choose_moni = Label(root, text='Monitor:', bg="#FDF8E1", fg="black", font=("Arial", 16))
 choose_moni.place(x=center_x-250, y=y_moni)
 
-# Menu desplegable
+# drop-down menu
 select_moni = tk.IntVar()
 menu_button_moni = Menubutton(root, text='Selecciona el monitor' ,bg="#FFFFFF", fg="black", font=("Arial", 16))
 menu_moni  = tk.Menu(menu_button_moni , tearoff=False)
 menu_button_moni ["menu"] = menu_moni
 
-for i, monitor in enumerate(moni.get_moni()) :
+for i, monitor in enumerate(moni):
     menu_moni.add_radiobutton(label=monitor.name, value=i, variable = select_moni, command=select_monitor)
 
-menu_button_moni.grid(row=len(moni.get_moni()), column=1)
+menu_button_moni.grid(row=len(moni), column=1)
 menu_button_moni.place(x=center_x-130, y=y_moni)
 
 choose_type() #Eliges el tipo de archivo y se agregar la lista despegable

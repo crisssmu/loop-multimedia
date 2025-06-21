@@ -25,14 +25,17 @@ def format_time_label(root, string_time):
 
 def format_hour(root):
     time_hr = Entry(root, bg="#FFFFFF", fg="black", font=("Arial", 16), width=2, validate="key", validatecommand=command_hr(root))
+    time_hr.insert(0, '00')
     return time_hr
 
 def format_minute(root):
     time_min = Entry(root, bg="#FFFFFF", fg="black", font=("Arial", 16), width=2, validate="key", validatecommand=command_min(root))
+    time_min.insert(0, '00')
     return time_min
 
 def format_second(root):
     time_seg = Entry(root, bg="#FFFFFF", fg="black", font=("Arial", 16), width=2, validate="key", validatecommand=command_sg(root))
+    time_seg.insert(0, '00')
     return time_seg
 
 def separate(root):
@@ -46,4 +49,9 @@ def focus_time(event):
 def lost_focus_time(event):
     if event.widget.get() == "":
         event.widget.insert(0, "00")
+
+def convert_seconds(root):
+    total_seconds = int(format_hour(root).get()) * 3600 + int(format_minute(root).get()) * 60 + int(format_second(root).get())
+    print(f"Total seconds: {total_seconds}")
+    return total_seconds
 
