@@ -1,7 +1,7 @@
 import cv2
 import time
 import pygame
-from utils.Monitor_utils import Monitor
+from utils.monitor_utils import Monitor
 import threading as th
 
 

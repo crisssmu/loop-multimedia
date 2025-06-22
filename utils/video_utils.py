@@ -1,6 +1,6 @@
 import cv2
 import datetime
-from utils.Monitor_utils import Monitor
+from utils.monitor_utils import Monitor
 import pygame
 import threading as th
 

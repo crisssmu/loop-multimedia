@@ -9,7 +9,7 @@ import traceback
 # Agrega el path a la raíz del proyecto (donde está la carpeta utils/)
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 import utils.Loop_media as loop
-from utils.Monitor_utils import Monitor
+from utils.monitor_utils import Monitor
 from exceptions.EmptyArgs import EmptyArgs as exceptions
 import threading as th
 import utils.FormaterTime as ft
