@@ -1,8 +1,8 @@
 
 import time
-from utils.Monitor_utils import Monitor
-from utils.Image_utils import Image
-from utils.Video_utils import Video
+from utils.Monitor_utils import Monitor 
+from utils.Image_utils import Image 
+from utils.Video_utils import Video 
 import threading as th
 
 

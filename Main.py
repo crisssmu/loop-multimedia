@@ -1,7 +1,7 @@
 
 import interfaz.Gui as gui
 from utils.Extension_media import ExtensionMedia as ext
-from utils.Monitor_utils import Monitor as monitor
+from utils.Monitor_utils import Monitor as monitor 
 
 path = ext.get_path()
 imagenes = ext.list_file_imagen(path)
