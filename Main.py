@@ -1,6 +1,6 @@
 
-import interfaz.Gui as gui
-from utils.Extension_media import ExtensionMedia as ext
+import interfaz.gui as gui
+from utils.extension_media import ExtensionMedia as ext
 from utils.monitor_utils import Monitor as monitor 
 
 path = ext.get_path()
