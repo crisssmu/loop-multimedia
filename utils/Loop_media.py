@@ -17,6 +17,7 @@ def loop_video(path, intermediate_time, index_moni, duration_time, op):
         # op = int(input("Elige el tipo: 1 video o 2 imagen:"))
 
         while not stop_event.is_set():
+            
             if(op == 0):
                 print('Reproduciendo video...')
                 video =Video(path, stop_event)
@@ -26,14 +27,14 @@ def loop_video(path, intermediate_time, index_moni, duration_time, op):
                     break
                 print('Esperando ', intermediate_time, ' segundos...')
             else:
-                 if(op == 1):
-                     print('Reproduciendo imagen...')
-                     image = Image(path, stop_event)
-                     image.watch_image(index_moni, duration_time)
-                     if stop_event.is_set():
-                        print('Imagen pausado...')
+                if(op == 1):
+                    print('Reproduciendo imagen...')
+                    image = Image(path, stop_event)
+                    image.watch_image(index_moni, duration_time)
+                    if stop_event.is_set():
+                        print('Imagen pausada...')
                         break
-                     print('Esperando ', intermediate_time, ' segundos...')
+                    print('Esperando ', intermediate_time, ' segundos...')
             for i in range(intermediate_time):
                 if stop_event.is_set():
                         break
@@ -41,5 +42,7 @@ def loop_video(path, intermediate_time, index_moni, duration_time, op):
                 time.sleep(1)
     except KeyboardInterrupt:
         print('\nPrograma finalizado por el usuario')
+        stop_event.set()
+    finally:
         stop_event.set()
 

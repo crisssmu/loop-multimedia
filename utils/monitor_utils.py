@@ -1,4 +1,4 @@
-import cv2
+
 import pygame
 from screeninfo import get_monitors as screen_monitor
 import ctypes
@@ -31,13 +31,17 @@ class Monitor:
             print(f"Posicion: {monitor.x}x{monitor.y}")
             print()
     
-    def choose_monitor(index_moni):
+    def select_monitor(index_moni):
         monitor = screen_monitor()[index_moni]
+        
+        return monitor
+    def send_media_to_monitor(monitor):
         pygame.init()
+        
         windowms = pygame.display.set_mode((monitor.width, monitor.height), pygame.NOFRAME)
-
+        
         hwnd = pygame.display.get_wm_info()["window"]
-        ctypes.windll.user32.SetWindowPos(hwnd, 0, monitor.x, monitor.y, 0, 0, 0x0001 | 0x0004 | 0x0040)
-
-        return monitor, windowms
+        ctypes.windll.user32.SetWindowPos(hwnd, 0, monitor.x, monitor.y, 0, 0, 0x0001 )
+        
+        return windowms
 

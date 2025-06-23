@@ -3,6 +3,8 @@ import datetime
 from utils.monitor_utils import Monitor
 import pygame
 import threading as th
+import win32gui, win32con
+
 
 class Video:
 
@@ -16,12 +18,12 @@ class Video:
     def get_video(self):
         cap = cv2.VideoCapture(self.name)
         return cap
-   
+
     def get_fps(self):
         cap = self.get_video()
         return  cap.get(cv2.CAP_PROP_FPS)
         
-   
+
     def get_frames(self):
         cap = self.get_video()
         return int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -46,7 +48,8 @@ class Video:
     def watch_video(self, index_moni):
         try:
             Monitor.get_monitores()
-            moni, windowms = Monitor.choose_monitor(index_moni)
+            moni = Monitor.select_monitor(index_moni)
+            windowms = Monitor.send_media_to_monitor(moni)
             
             cap = self.get_video()
 
@@ -60,11 +63,15 @@ class Video:
             cont_frames = 0
 
             print('Duracion del video: ', duration)
+
             def escalar_frame(frame):
                 return cv2.resize(frame, (moni.width, moni.height))
             
             reloj = pygame.time.Clock()
-            
+
+            hwnd = pygame.display.get_wm_info()["window"]
+            win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, moni.x, moni.y, moni.width, moni.height, win32con.SWP_SHOWWINDOW)
+
             while not self.stop_event.is_set() and cont_frames < total_frames:
                 ret, frame = cap.read()
                 if not ret:
@@ -90,11 +97,3 @@ class Video:
         except KeyboardInterrupt:
             print('Programa finalizado por el usuario')
             self.stop_event.set()
-
-        
-
-
-
-
-
-    

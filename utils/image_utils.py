@@ -3,6 +3,7 @@ import time
 import pygame
 from utils.monitor_utils import Monitor
 import threading as th
+import win32gui, win32con
 
 
 
@@ -24,7 +25,8 @@ class Image:
     def watch_image(self, index_moni, duration_seconds):
         try:
             Monitor.get_monitores()
-            moni, windowms = Monitor.choose_monitor(index_moni)
+            moni = Monitor.select_monitor(index_moni)
+            windowms = Monitor.send_media_to_monitor(moni)
             
             img = self.get_image()
 
@@ -38,6 +40,9 @@ class Image:
 
             clock = pygame.time.Clock()
             start_time = time.time()
+
+            hwnd = pygame.display.get_wm_info()["window"]
+            win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, moni.x, moni.y, moni.width, moni.height, win32con.SWP_SHOWWINDOW)
         
             while not self.stop_event.is_set() and (time.time() - start_time) <= duration_seconds:
                     for event in pygame.event.get():
