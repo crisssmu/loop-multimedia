@@ -10,7 +10,7 @@ from PIL import Image, ImageTk
 
 # Agrega el path a la raíz del proyecto (donde está la carpeta utils/)
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-import utils.loop_media as loop
+import utils.Loop_media as loop
 from utils.monitor_utils import Monitor
 from utils.EmptyArgs import EmptyArgs as exceptions
 import threading as th

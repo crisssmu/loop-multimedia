@@ -1,5 +1,5 @@
 
-import interfaz.gui as gui
+import interfaz.Gui as gui
 from utils.extension_media import ExtensionMedia as ext
 from utils.monitor_utils import Monitor as monitor 
 
