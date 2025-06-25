@@ -13,11 +13,7 @@ stop_event = th.Event()
 def loop_video(path, intermediate_time, index_moni, duration_time, op):
     
     try:
-        # index_moni = int(input("Ingrese el índice del monitor deseado: "))
-        # op = int(input("Elige el tipo: 1 video o 2 imagen:"))
-
         while not stop_event.is_set():
-            
             if(op == 0):
                 print('Reproduciendo video...')
                 video =Video(path, stop_event)
@@ -42,7 +38,5 @@ def loop_video(path, intermediate_time, index_moni, duration_time, op):
                 time.sleep(1)
     except KeyboardInterrupt:
         print('\nPrograma finalizado por el usuario')
-        stop_event.set()
-    finally:
         stop_event.set()
 

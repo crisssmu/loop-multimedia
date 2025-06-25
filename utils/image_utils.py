@@ -23,11 +23,12 @@ class Image:
         self.stop_event.set()
 
     def watch_image(self, index_moni, duration_seconds):
+        
         try:
             Monitor.get_monitores()
             moni = Monitor.select_monitor(index_moni)
             windowms = Monitor.send_media_to_monitor(moni)
-            
+
             img = self.get_image()
 
             if img is None:
@@ -52,8 +53,11 @@ class Image:
                     windowms.blit(img_s, (0, 0))
                     pygame.display.update()
                     clock.tick(60)
-            pygame.quit()
+            
         except KeyboardInterrupt:
             print('Programa finalizado por el usuario')
             self.stop_event.set()
-        
+        finally:
+            pygame.display.quit()
+            cv2.destroyAllWindows()
+

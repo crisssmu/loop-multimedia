@@ -46,11 +46,13 @@ class Video:
         self.stop_event.set()
     
     def watch_video(self, index_moni):
+        
         try:
             Monitor.get_monitores()
             moni = Monitor.select_monitor(index_moni)
             windowms = Monitor.send_media_to_monitor(moni)
             
+
             cap = self.get_video()
 
             if not cap.isOpened():
@@ -91,9 +93,11 @@ class Video:
                     if event.type == pygame.QUIT:
                         self.stop_event.set()
 
-            print('Reproduccion finalizada')
-            cap.release()
-            pygame.quit()
         except KeyboardInterrupt:
             print('Programa finalizado por el usuario')
             self.stop_event.set()
+        finally:
+            cap.release()
+            pygame.display.quit()
+            pygame.quit()
+            cv2.destroyAllWindows()

@@ -6,7 +6,6 @@ from tkinter import *
 import sys
 import os
 from pathlib import Path
-from PIL import Image, ImageTk
 
 # Agrega el path a la raíz del proyecto (donde está la carpeta utils/)
 sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -214,11 +213,14 @@ def start_interface(file_video, file_image, moni):
         except Exception as e:
             root.after(0, lambda e=e:messagebox.showerror("Error", str(e)))
             print(e)
+        
     
     def on_closing():
+        global video_thread
         loop.stop_event.set()
         if video_thread and video_thread.is_alive():
             video_thread.join()
+            stop()
         root.destroy()
     
     def stop():
