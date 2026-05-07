@@ -1,6 +1,7 @@
 import cv2
 import time
 import pygame
+import sys
 from utils.monitor_utils import Monitor
 import threading as th
 import win32gui, win32con
@@ -33,7 +34,7 @@ class Image:
 
             if img is None:
                 print("Error opening video stream or file")
-                exit()
+                sys.exit()
 
             img =  cv2.resize(img, (moni.width, moni.height))
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)

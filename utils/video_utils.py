@@ -1,6 +1,7 @@
 import cv2
 import datetime
 from utils.monitor_utils import Monitor
+import sys
 import pygame
 import threading as th
 import win32gui, win32con
@@ -57,7 +58,7 @@ class Video:
 
             if not cap.isOpened():
                 print("Error opening video stream or file")
-                exit()
+                sys.exit()
             
             fps = self.get_fps()
             total_frames = self.get_frames()

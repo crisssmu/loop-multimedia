@@ -16,6 +16,17 @@ class ExtensionMedia:
             frame = ins.stack()[1]
             rute = Path(frame.filename).resolve().parent
             return rute
+        
+    @staticmethod
+    def resource_path(relative_path):
+        try:
+            # PyInstaller crea una carpeta temporal y almacena la ruta en _MEIPASS
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)
+
     @classmethod
     def list_file_videos(cls, rute):
         if not rute.exists() or not rute.is_dir():
